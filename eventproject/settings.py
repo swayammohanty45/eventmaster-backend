@@ -47,14 +47,16 @@ TEMPLATES = [{'BACKEND': 'django.template.backends.django.DjangoTemplates',
                    'django.contrib.messages.context_processors.messages',
                ]}}]
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'event',
-        'USER': 'root',
-        'PASSWORD': 'root_db',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.environ.get('MYSQLDATABASE', 'university'),
+        'USER': os.environ.get('MYSQLUSER', 'root'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD', 'root_db'),
+        'HOST': os.environ.get('MYSQLHOST', 'localhost'),
+        'PORT': os.environ.get('MYSQLPORT', '3306'),
     }
 }
 
