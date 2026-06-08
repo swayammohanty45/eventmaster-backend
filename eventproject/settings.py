@@ -1,4 +1,5 @@
 import pymysql
+import os
 pymysql.install_as_MySQLdb()
 
 from pathlib import Path
@@ -8,7 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-eventmaster-2025'
 
-import os
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
 
@@ -47,7 +47,6 @@ TEMPLATES = [{'BACKEND': 'django.template.backends.django.DjangoTemplates',
                    'django.contrib.messages.context_processors.messages',
                ]}}]
 
-import os
 
 DATABASES = {
     'default': {
