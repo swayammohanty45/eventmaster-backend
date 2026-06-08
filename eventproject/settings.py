@@ -11,6 +11,10 @@ SECRET_KEY = 'django-insecure-eventmaster-2025'
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-f37d0c.up.railway.app',
+    'https://eventmaster-frontend-alzzfyezx-swayam-mohanty-s-projects.vercel.app',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
