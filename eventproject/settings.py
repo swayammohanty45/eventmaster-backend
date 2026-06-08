@@ -6,13 +6,11 @@ from pathlib import Path
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = 'django-insecure-eventmaster-2025'
-
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = False
 ALLOWED_HOSTS = ['*']
+
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-f37d0c.up.railway.app',
     'https://eventmaster-frontend-alzzfyezx-swayam-mohanty-s-projects.vercel.app',
 ]
 
