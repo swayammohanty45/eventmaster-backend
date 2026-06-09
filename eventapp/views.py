@@ -231,8 +231,7 @@ def pending_verifications(request):
     return Response(BookingSerializer(bookings, many=True).data)
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
+ 
 def send_ticket_email(booking):
     """Send ticket confirmation email to user"""
     try:
@@ -276,7 +275,8 @@ Thank you for booking with EventMaster!
     except Exception as e:
         print(f"Email sending failed: {e}")
 
-
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def confirm_payment(request, pk):
     if not is_admin(request.user):
         return Response({'error': 'Admin only'}, status=403)
