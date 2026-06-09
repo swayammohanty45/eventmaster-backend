@@ -240,7 +240,7 @@ def send_ticket_email(booking):
         subject = f"🎟️ Your Ticket Confirmed - {booking.event.title}"
         
         message = f"""
-Dear {booking.username},
+Dear {booking.user.username},
 
 Your booking has been confirmed! Here are your ticket details:
 
