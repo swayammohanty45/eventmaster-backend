@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count, Q
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import Event, Seat, Booking, Payment, Wishlist
 from .serializers import (EventSerializer, SeatSerializer, BookingSerializer,
@@ -231,6 +233,50 @@ def pending_verifications(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def send_ticket_email(booking):
+    """Send ticket confirmation email to user"""
+    try:
+        seat_info = ', '.join(booking.seat_labels) if booking.seat_labels else f"{booking.num_tickets} ticket(s)"
+        
+        subject = f"🎟️ Your Ticket Confirmed - {booking.event.title}"
+        
+        message = f"""
+Dear {booking.username},
+
+Your booking has been confirmed! Here are your ticket details:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ EVENTMASTER - OFFICIAL TICKET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎟️ TICKET NUMBER: {booking.ticket_number}
+📋 BOOKING REF:   {booking.booking_ref}
+
+🎪 EVENT:    {booking.event.title}
+📅 DATE:     {booking.event.date}
+⏰ TIME:     {booking.event.time}
+📍 VENUE:    {booking.event.venue}
+💺 SEATS:    {seat_info}
+🎫 TICKETS:  {booking.num_tickets}
+💰 AMOUNT:   ₹{booking.total_amount:.2f}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Please show this ticket number at the entry gate.
+
+Thank you for booking with EventMaster!
+        """
+        
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=None,  # uses DEFAULT_FROM_EMAIL
+            recipient_list=[booking.user.email],
+            fail_silently=True,  # won't crash if email fails
+        )
+    except Exception as e:
+        print(f"Email sending failed: {e}")
+
+
 def confirm_payment(request, pk):
     if not is_admin(request.user):
         return Response({'error': 'Admin only'}, status=403)
@@ -239,6 +285,7 @@ def confirm_payment(request, pk):
         return Response({'error': 'Not pending verification'}, status=400)
     booking.status = 'confirmed'
     booking.generate_ticket_number()
+    send_ticket_email(booking)  # new for email
     try:
         booking.payment.payment_status = 'paid'
         booking.payment.save()
