@@ -285,7 +285,8 @@ def confirm_payment(request, pk):
         return Response({'error': 'Not pending verification'}, status=400)
     booking.status = 'confirmed'
     booking.generate_ticket_number()
-    send_ticket_email(booking)  # new for email
+     
+    # send_ticket_email(booking)  # new for email
     try:
         booking.payment.payment_status = 'paid'
         booking.payment.save()
